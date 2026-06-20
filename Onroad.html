@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ONROAD - 권역별 프로모션 안내</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Apple SD Gothic Neo', 'Pretendard', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background-color: #09090b;
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: #09090b;
+            position: relative;
+        }
+        
+        /* 공통 헤더 (메인) */
+        .main-header {
+            padding: 40px 20px 20px;
+            text-align: center;
+        }
+        .logo {
+            font-size: 40px; font-weight: 900; font-style: italic;
+            background: linear-gradient(90deg, #ff3b3b, #ff9100);
+            -webkit-background-clip: text; color: transparent;
+            letter-spacing: -2px; line-height: 1.1;
+        }
+        .sub-logo {
+            color: #d4d4d8; font-size: 15px; font-weight: 700;
+            margin-top: 8px; letter-spacing: 1px;
+        }
+        .speed-line {
+            width: 50px; height: 4px; background: #ff3b3b;
+            margin: 15px auto 0; transform: skewX(-30deg);
+        }
+
+        /* 섹션 타이틀 */
+        .section-title {
+            padding: 0 20px; font-size: 18px; font-weight: 900;
+            color: #fff; margin: 30px 0 15px; display: flex; align-items: center; gap: 8px;
+        }
+
+        /* 🚀 오늘의 프로모션 카드 (메인 요약) */
+        .promo-summary-list { padding: 0 20px; display: flex; flex-direction: column; gap: 10px; }
+        .summary-card {
+            background: #18181b; border-left: 4px solid #ffaa00;
+            padding: 16px; border-radius: 12px; display: flex; flex-direction: column; gap: 4px;
+        }
+        .summary-card.red { border-left-color: #ff3b3b; }
+        .summary-region { font-size: 12px; font-weight: 800; color: #a1a1aa; }
+        .summary-text { font-size: 15px; font-weight: 800; color: #fff; }
+        .summary-text span { color: #ffaa00; }
+        .summary-card.red .summary-text span { color: #ff3b3b; }
+
+        /* 🚀 권역 선택 그리드 (메인) */
+        .region-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px 40px;
+        }
+        .region-card {
+            background: linear-gradient(145deg, #18181b, #0f0f11);
+            border: 1px solid #27272a; border-radius: 16px;
+            padding: 24px 16px; text-align: center; cursor: pointer;
+            transition: 0.2s; box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+        }
+        .region-card:active { transform: scale(0.96); border-color: #ff3b3b; }
+        .rc-icon { font-size: 28px; margin-bottom: 10px; display: block; }
+        .rc-title { font-size: 18px; font-weight: 900; color: #fff; letter-spacing: -0.5px; }
+        .rc-sub { font-size: 11px; color: #71717a; font-weight: 700; margin-top: 4px; }
+
+        /* ========================================
+           권역 상세 페이지 (기본 숨김)
+           ======================================== */
+        .view-section {
+            display: none; position: absolute; top: 0; left: 0; width: 100%; min-height: 100%;
+            background: #09090b; padding-bottom: 80px; z-index: 10;
+        }
+        .view-section.active { display: block; animation: slideIn 0.3s cubic-bezier(0.1, 0.7, 0.1, 1); }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+        /* 뒤로가기 헤더 */
+        .detail-header {
+            display: flex; align-items: center; padding: 20px;
+            background: rgba(9, 9, 11, 0.9); border-bottom: 1px solid #27272a;
+            position: sticky; top: 0; z-index: 20; backdrop-filter: blur(10px);
+        }
+        .back-btn {
+            background: none; border: none; color: #fff; font-size: 16px; font-weight: 800;
+            display: flex; align-items: center; gap: 8px; cursor: pointer;
+        }
+        
+        .detail-content { padding: 20px; }
+        .d-title {
+            font-size: 26px; font-weight: 900; font-style: italic;
+            color: #ff9100; margin-bottom: 16px; letter-spacing: -1px;
+        }
+
+        /* 지도 */
+        .map-wrapper { width: 100%; border-radius: 16px; overflow: hidden; margin-bottom: 24px; border: 1px solid #27272a; }
+        .map-img { width: 100%; display: block; }
+
+        /* 프로모션 박스 */
+        .promo-box {
+            background: #121214; border: 1px solid #27272a; border-radius: 16px;
+            padding: 20px; margin-bottom: 24px;
+        }
+        .pb-title { color: #fff; font-size: 16px; font-weight: 900; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .pb-title::before { content: ''; display: block; width: 4px; height: 16px; background: #ff3b3b; border-radius: 2px; }
+        
+        /* 프로모션 테이블 */
+        .promo-table { width: 100%; border-collapse: collapse; background: #000; border-radius: 12px; overflow: hidden; }
+        .promo-table th { background: linear-gradient(90deg, #1a0505, #2a0a0a); color: #ff3b3b; padding: 10px; font-size: 12px; border-bottom: 1px solid #3f0f0f; }
+        .promo-table td { padding: 14px 10px; text-align: center; border-bottom: 1px solid #18181b; font-size: 13px; color: #e4e4e7; font-weight: 600;}
+        .promo-table tr:last-child td { border-bottom: none; }
+        .td-val { font-size: 18px; font-weight: 900; font-style: italic; color: #ff9100; }
+        .td-val.red { color: #ff3b3b; }
+
+        /* 권역별 문의 정보 */
+        .contact-box {
+            background: #121214; border: 1px solid #27272a; border-radius: 16px;
+            padding: 18px; margin-bottom: 24px; display: flex; flex-direction: column; gap: 10px;
+        }
+        .contact-row {
+            display: flex; justify-content: space-between; align-items: center; gap: 12px;
+            color: #e4e4e7; font-size: 14px; font-weight: 800;
+        }
+        .contact-label { color: #a1a1aa; font-size: 12px; white-space: nowrap; }
+        .contact-link {
+            color: #fff; text-decoration: none; text-align: right; overflow-wrap: anywhere;
+        }
+        .contact-link.kakao { color: #ffe812; }
+
+        /* 관할 구역 태그 (동) */
+        .dong-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 30px; }
+        .dong-tag {
+            background: #18181b; border: 1px solid #3f3f46; color: #a1a1aa;
+            padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 600;
+        }
+
+        /* 하단 고정 문의 버튼 */
+        .fixed-bottom {
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 480px; padding: 16px 20px;
+            background: linear-gradient(0deg, #09090b 80%, transparent);
+            display: flex; gap: 10px; z-index: 30;
+        }
+        .btn {
+            flex: 1; padding: 16px 0; border-radius: 14px; text-align: center;
+            font-size: 15px; font-weight: 900; text-decoration: none; transition: 0.2s;
+        }
+        .btn-call { background: #27272a; color: #fff; border: 1px solid #3f3f46; }
+        .btn-kakao { background: #ffe812; color: #3c1e1e; }
+        .btn:active { transform: scale(0.96); }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <div id="main-view">
+        <div class="main-header">
+            <div class="logo">ONROAD</div>
+            <div class="sub-logo">수원 전 지역 배민플러스 운영 팀</div>
+            <div class="speed-line"></div>
+        </div>
+
+        <div class="section-title">🔥 오늘의 프로모션</div>
+        <div class="promo-summary-list">
+            <div class="summary-card red">
+                <div class="summary-region">서수원 권역</div>
+                <div class="summary-text">건당 <span>최대 3,000원</span> 파격 할증!</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-region">장안 권역</div>
+                <div class="summary-text">전 구간 최대 <span> 49,000원</span> 지급!</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-region">팔달 · 영통 권역</div>
+                <div class="summary-text"> 건당 최대  <span>1,500원</span> 지급!</div>
+            </div>
+        </div>
+
+        <div class="section-title" style="margin-top: 40px;">🟨 현재 운영 권역 보기</div>
+        <div class="region-grid">
+            <div class="region-card" onclick="openRegion('seosuwon')">
+                <span class="rc-icon">⚡</span>
+                <div class="rc-title">서수원 권역</div>
+                <div class="rc-sub">최고 단가 적용 구역</div>
+            </div>
+            <div class="region-card" onclick="openRegion('jangan')">
+                <span class="rc-icon">🚀</span>
+                <div class="rc-title">장안 권역</div>
+                <div class="rc-sub">맞춤형 옵션 선택제</div>
+            </div>
+            <div class="region-card" onclick="openRegion('paldal')">
+                <span class="rc-icon">💰</span>
+                <div class="rc-title">팔달 권역</div>
+                <div class="rc-sub">주간 롱런 & 잭팟 상금</div>
+            </div>
+            <div class="region-card" onclick="openRegion('yeongtong')">
+                <span class="rc-icon">🔥</span>
+                <div class="rc-title">영통 권역</div>
+                <div class="rc-sub">주간 롱런 & 잭팟 상금</div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="view-seosuwon" class="view-section">
+        <div class="detail-header">
+            <button class="back-btn" onclick="goHome()">← 메인으로 이동</button>
+        </div>
+        <div class="detail-content">
+            <div class="d-title">서수원 ONROAD 권역</div>
+            <div class="map-wrapper"><img src="./서수원.png" alt="서수원 지도" class="map-img"></div>
+            
+            <div class="promo-box">
+                <div class="pb-title">현재 진행중인 프로모션</div>
+                <table class="promo-table">
+                    <tr><th>조건</th><th>초과 건당 보너스</th></tr>
+                    <tr><td>180건 이후 수행 시</td><td class="td-val">+1,500원</td></tr>
+                    <tr><td>중점 구간 완료 시</td><td class="td-val">+1,500원</td></tr>
+                    <tr><td style="color:#fff;">최대 혜택 합산</td><td class="td-val red">MAX +3,000원</td></tr>
+                </table>
+            </div>
+
+            <div class="contact-box">
+                <div class="pb-title">서수원 문의</div>
+                <div class="contact-row">
+                    <span class="contact-label">전화</span>
+                    <a href="tel:01025029502" class="contact-link">010-2502-9502</a>
+                </div>
+                <div class="contact-row">
+                    <span class="contact-label">카카오톡</span>
+                    <a href="https://open.kakao.com/o/sodFtoAi" class="contact-link kakao" target="_blank" rel="noopener">온로드 서수원지사</a>
+                </div>
+            </div>
+
+            <div class="pb-title">운영 지역 (동)</div>
+            <div class="dong-list">
+                <div class="dong-tag">금곡동</div><div class="dong-tag">호매실동</div><div class="dong-tag">입북동</div>
+                <div class="dong-tag">당수동</div><div class="dong-tag">탑동</div><div class="dong-tag">평동</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-jangan" class="view-section">
+        <div class="detail-header">
+            <button class="back-btn" onclick="goHome()">← 메인으로 이동</button>
+        </div>
+        <div class="detail-content">
+            <div class="d-title">장안 ONROAD 권역</div>
+            <div class="map-wrapper"><img src="./장안.png" alt="장안 지도" class="map-img"></div>
+            
+            <div class="promo-box">
+                <div class="pb-title">옵션 1. 무한 질주형</div>
+                <table class="promo-table" style="margin-bottom: 20px;">
+                    <tr><th>조건</th><th>보너스</th></tr>
+                    <tr><td>180건 달성 이후</td><td class="td-val">+1,500원/건</td></tr>
+                </table>
+
+                <div class="pb-title">옵션 2. 피크 집중형</div>
+                <table class="promo-table">
+                    <tr><th>시간대</th><th>건수</th><th>보너스</th></tr>
+                    <tr><td rowspan="3" style="color:#ffaa00;">오전피크</td><td>7건</td><td class="td-val">5,000원</td></tr>
+                    <tr><td>11건</td><td class="td-val">10,000원</td></tr>
+                    <tr><td>15건</td><td class="td-val red">17,000원</td></tr>
+                    <tr><td rowspan="2" style="color:#7dd3fc; border-top:1px solid #3f0f0f;">오후논피</td><td style="border-top:1px solid #3f0f0f;">8건</td><td class="td-val" style="border-top:1px solid #3f0f0f;">7,000원</td></tr>
+                    <tr><td>12건</td><td class="td-val red">15,000원</td></tr>
+                    <tr><td rowspan="3" style="color:#c084fc; border-top:1px solid #3f0f0f;">심야논피</td><td style="border-top:1px solid #3f0f0f;">7건</td><td class="td-val" style="border-top:1px solid #3f0f0f;">5,000원</td></tr>
+                    <tr><td>11건</td><td class="td-val">10,000원</td></tr>
+                    <tr><td>15건</td><td class="td-val red">17,000원</td></tr>
+                </table>
+            </div>
+
+            <div class="contact-box">
+                <div class="pb-title">장안 문의</div>
+                <div class="contact-row">
+                    <span class="contact-label">전화</span>
+                    <a href="tel:01058494445" class="contact-link">010-5849-4445</a>
+                </div>
+                <div class="contact-row">
+                    <span class="contact-label">카카오톡</span>
+                    <a href="https://open.kakao.com/o/s8NxHjAi" class="contact-link kakao" target="_blank" rel="noopener">온로드 장안지사</a>
+                </div>
+            </div>
+
+            <div class="pb-title">운영 지역 (동)</div>
+            <div class="dong-list">
+                <div class="dong-tag">파장동</div><div class="dong-tag">이목동</div><div class="dong-tag">조원동</div>
+                <div class="dong-tag">율전동</div><div class="dong-tag">정자동</div><div class="dong-tag">천천동</div>
+                <div class="dong-tag">영화동</div><div class="dong-tag">화서동</div><div class="dong-tag">구운동</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-paldal" class="view-section">
+        <div class="detail-header">
+            <button class="back-btn" onclick="goHome()">← 메인으로 이동</button>
+        </div>
+        <div class="detail-content">
+            <div class="d-title">팔달 ONROAD 권역</div>
+            <div class="map-wrapper"><img src="./팔달.png" alt="팔달 지도" class="map-img"></div>
+            
+            <div class="promo-box">
+                <div class="pb-title">현재 진행중인 프로모션</div>
+                <table class="promo-table" style="margin-bottom: 15px;">
+                    <tr><th>조건 </th><th>초과 건당 보너스</th></tr>
+                    <tr><td>주간 180건 이후</td><td class="td-val">+1,500원</td></tr>
+                </table>
+                <div style="background: linear-gradient(135deg, #2a1a00, #1a1000); border: 1px solid #ffaa00; border-radius: 12px; padding: 16px; text-align: center;">
+                    <div style="color: #ffaa00; font-size: 24px; font-weight: 900; font-style: italic;">매주 깜짝 미션</div>
+                </div>
+            </div>
+
+            <div class="contact-box">
+                <div class="pb-title">팔달 문의</div>
+                <div class="contact-row">
+                    <span class="contact-label">전화</span>
+                    <a href="tel:01085676640" class="contact-link">010-8567-6640</a>
+                </div>
+                <div class="contact-row">
+                    <span class="contact-label">카카오톡</span>
+                    <a href="https://open.kakao.com/o/svvQtoAi" class="contact-link kakao" target="_blank" rel="noopener">온로드 팔달지사</a>
+                </div>
+            </div>
+
+            <div class="pb-title">운영 지역 (동)</div>
+            <div class="dong-list">
+                <div class="dong-tag">매산로1가</div><div class="dong-tag">고등동</div><div class="dong-tag">행궁동</div>
+                <div class="dong-tag">지동</div><div class="dong-tag">우만동</div><div class="dong-tag">원천동</div>
+                <div class="dong-tag">매교동</div><div class="dong-tag">인계동</div><div class="dong-tag">매탄동</div>
+                <div class="dong-tag">세류동</div><div class="dong-tag">권선동</div><div class="dong-tag">신동</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-yeongtong" class="view-section">
+        <div class="detail-header">
+            <button class="back-btn" onclick="goHome()">← 메인으로 이동</button>
+        </div>
+        <div class="detail-content">
+            <div class="d-title">영통 ONROAD 권역</div>
+            <div class="map-wrapper"><img src="./영통.png" alt="영통 지도" class="map-img"></div>
+            
+            <div class="promo-box">
+                <div class="pb-title">현재 진행중인 프로모션</div>
+                <table class="promo-table" style="margin-bottom: 15px;">
+                    <tr><th>조건 </th><th>초과 건당 보너스</th></tr>
+                    <tr><td>주간 180건 이후</td><td class="td-val">+1,500원</td></tr>
+                </table>
+                <div style="background: linear-gradient(135deg, #2a1a00, #1a1000); border: 1px solid #ffaa00; border-radius: 12px; padding: 16px; text-align: center;">
+                    <div style="color: #ffaa00; font-size: 24px; font-weight: 900; font-style: italic;">매주 깜짝미션</div>
+                </div>
+            </div>
+
+            <div class="contact-box">
+                <div class="pb-title">영통 문의</div>
+                <div class="contact-row">
+                    <span class="contact-label">전화</span>
+                    <a href="tel:01055548451" class="contact-link">010-5554-8451</a>
+                </div>
+                <div class="contact-row">
+                    <span class="contact-label">카카오톡</span>
+                    <a href="https://open.kakao.com/o/sT2gRZzi" class="contact-link kakao" target="_blank" rel="noopener">온로드 영통지사</a>
+                </div>
+            </div>
+
+            <div class="pb-title">운영 지역 (동)</div>
+            <div class="dong-list">
+                <div class="dong-tag">곡반정동</div><div class="dong-tag">인계동</div><div class="dong-tag">매탄동</div>
+                <div class="dong-tag">권선동</div><div class="dong-tag">원천동</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="action-buttons" class="fixed-bottom" style="display: none;">
+        <a href="#" id="call-button" class="btn btn-call">📞 전화 상담</a>
+        <a href="#" id="kakao-button" class="btn btn-kakao" target="_blank" rel="noopener">💬 카카오톡 문의</a>
+    </div>
+
+</div>
+
+<script>
+    const regionContacts = {
+        seosuwon: {
+            phone: '010-2502-9502',
+            tel: '01025029502',
+            kakao: 'https://open.kakao.com/o/sodFtoAi',
+            kakaoName: '온로드 서수원지사'
+        },
+        jangan: {
+            phone: '010-5849-4445',
+            tel: '01058494445',
+            kakao: 'https://open.kakao.com/o/s8NxHjAi',
+            kakaoName: '온로드 장안지사'
+        },
+        paldal: {
+            phone: '010-8567-6640',
+            tel: '01085676640',
+            kakao: 'https://open.kakao.com/o/svvQtoAi',
+            kakaoName: '온로드 팔달지사'
+        },
+        yeongtong: {
+            phone: '010-5554-8451',
+            tel: '01055548451',
+            kakao: 'https://open.kakao.com/o/sT2gRZzi',
+            kakaoName: '온로드 영통지사'
+        }
+    };
+
+    // 페이지 전환 로직 (SPA 형태)
+    function openRegion(regionName) {
+        const contact = regionContacts[regionName];
+
+        // 메인 숨기기
+        document.getElementById('main-view').style.display = 'none';
+        
+        // 모든 상세 뷰 숨기기
+        const views = document.querySelectorAll('.view-section');
+        views.forEach(view => view.classList.remove('active'));
+        
+        // 선택한 뷰 열기
+        document.getElementById('view-' + regionName).classList.add('active');
+        
+        // 하단 버튼 띄우기
+        document.getElementById('action-buttons').style.display = 'flex';
+        document.getElementById('call-button').href = 'tel:' + contact.tel;
+        document.getElementById('call-button').textContent = '📞 ' + contact.phone;
+        document.getElementById('kakao-button').href = contact.kakao;
+        document.getElementById('kakao-button').textContent = '💬 ' + contact.kakaoName;
+        
+        // 스크롤 맨 위로
+        window.scrollTo(0, 0);
+    }
+
+    function goHome() {
+        // 모든 상세 뷰 및 버튼 숨기기
+        const views = document.querySelectorAll('.view-section');
+        views.forEach(view => view.classList.remove('active'));
+        document.getElementById('action-buttons').style.display = 'none';
+        
+        // 메인 뷰 보이기
+        document.getElementById('main-view').style.display = 'block';
+        
+        // 스크롤 맨 위로
+        window.scrollTo(0, 0);
+    }
+</script>
+
+</body>
+</html>
