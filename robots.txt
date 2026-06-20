@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://hancy98.github.io/Onroad/sitemap.xml
+Sitemap: https://suwononroad.kr/sitemap.xml
