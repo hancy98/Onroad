@@ -94,18 +94,21 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            gap: 10px;
         }
         .logo-img {
-            max-width: 100px;
-            max-height: 100px;
+            width: 58px;
+            height: 58px;
             object-fit: contain;
+            flex: 0 0 auto;
             filter: drop-shadow(0 2px 8px rgba(255, 232, 18, 0.15));
         }
         .logo {
             font-size: 40px; font-weight: 900; font-style: italic;
             background: linear-gradient(90deg, #ffe812, #ffaa00);
             -webkit-background-clip: text; color: transparent;
-            letter-spacing: -2px; line-height: 1.1;
+            letter-spacing: -1px; line-height: 1;
+            transform: translateY(1px);
         }
         .sub-logo {
             color: #d4d4d8; font-size: 15px; font-weight: 700;
