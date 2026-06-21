@@ -170,6 +170,11 @@
         .summary-text { font-size: 15px; font-weight: 800; color: #fff; }
         .summary-text span { color: #ffaa00; }
         .summary-card.red .summary-text span { color: #ff3b3b; }
+        .summary-note {
+            font-size: 13px;
+            font-weight: 800;
+            color: #e4e4e7;
+        }
 
         /* 🚀 권역 선택 그리드 (메인) */
         .region-grid {
@@ -232,6 +237,30 @@
         .promo-table tr:last-child td { border-bottom: none; }
         .td-val { font-size: 18px; font-weight: 900; font-style: italic; color: #ff9100; }
         .td-val.red { color: #ff3b3b; }
+        .mission-card {
+            background: linear-gradient(135deg, #2a1a00, #1a1000);
+            border: 1px solid #ffaa00;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+        .mission-title {
+            color: #ffaa00;
+            font-size: 24px;
+            font-weight: 900;
+            font-style: italic;
+            line-height: 1.15;
+        }
+        .mission-sub {
+            color: #fff;
+            font-size: 14px;
+            font-weight: 900;
+            line-height: 1.45;
+            margin-top: 10px;
+        }
+        .mission-sub span {
+            color: #ff3b3b;
+        }
 
         /* 권역별 문의 정보 */
         .contact-box {
@@ -265,9 +294,13 @@
         .btn {
             flex: 1; padding: 16px 0; border-radius: 14px; text-align: center;
             font-size: 15px; font-weight: 900; text-decoration: none; transition: 0.2s;
+            white-space: nowrap;
         }
         .btn-call { background: #27272a; color: #fff; border: 1px solid #3f3f46; }
+        .btn-extra-call { background: #18181b; color: #fff; border: 1px solid #ffaa00; }
         .btn-kakao { background: #ffe812; color: #3c1e1e; }
+        .fixed-bottom.three-way { gap: 8px; }
+        .fixed-bottom.three-way .btn { padding: 14px 0; font-size: 13px; border-radius: 12px; }
         .btn:active { transform: scale(0.96); }
 
     </style>
@@ -300,6 +333,11 @@
             <div class="summary-card">
                 <div class="summary-region">팔달 · 영통 권역</div>
                 <div class="summary-text"> 건당 최대  <span>1,500원</span> 지급!</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-region">지사 공통 혜택</div>
+                <div class="summary-text">지사별로 <span>오토바이 정비쿠폰</span> 지급!</div>
+                <div class="summary-note">제휴상점 커피 무제한</div>
             </div>
         </div>
 
@@ -435,8 +473,9 @@
                     <tr><th>조건 </th><th>초과 건당 보너스</th></tr>
                     <tr><td>주간 180건 이후</td><td class="td-val">+1,500원</td></tr>
                 </table>
-                <div style="background: linear-gradient(135deg, #2a1a00, #1a1000); border: 1px solid #ffaa00; border-radius: 12px; padding: 16px; text-align: center;">
-                    <div style="color: #ffaa00; font-size: 24px; font-weight: 900; font-style: italic;">매주 깜짝 미션</div>
+                <div class="mission-card">
+                    <div class="mission-title">매주 깜짝 미션</div>
+                    <div class="mission-sub">마스터 등급 + 추가 프로모션<br><span>역대급 본사미션</span></div>
                 </div>
             </div>
 
@@ -476,8 +515,9 @@
                     <tr><th>조건 </th><th>초과 건당 보너스</th></tr>
                     <tr><td>주간 180건 이후</td><td class="td-val">+1,500원</td></tr>
                 </table>
-                <div style="background: linear-gradient(135deg, #2a1a00, #1a1000); border: 1px solid #ffaa00; border-radius: 12px; padding: 16px; text-align: center;">
-                    <div style="color: #ffaa00; font-size: 24px; font-weight: 900; font-style: italic;">매주 깜짝미션</div>
+                <div class="mission-card">
+                    <div class="mission-title">매주 깜짝 미션</div>
+                    <div class="mission-sub">마스터 등급 + 추가 프로모션<br><span>역대급 본사미션</span></div>
                 </div>
             </div>
 
@@ -502,6 +542,7 @@
     </div>
 
     <div id="action-buttons" class="fixed-bottom" style="display: none;">
+        <a href="#" id="extra-call-button" class="btn btn-extra-call" style="display: none;">📞 010-7544-5748</a>
         <a href="#" id="call-button" class="btn btn-call">📞 전화 상담</a>
         <a href="#" id="kakao-button" class="btn btn-kakao" target="_blank" rel="noopener">💬 카카오톡 문의</a>
     </div>
@@ -513,6 +554,8 @@
         seosuwon: {
             phone: '010-2502-9502',
             tel: '01025029502',
+            extraPhone: '010-7544-5748',
+            extraTel: '01075445748',
             kakao: 'https://open.kakao.com/o/sodFtoAi',
             kakaoName: '온로드 서수원지사'
         },
@@ -551,7 +594,18 @@
         document.getElementById('view-' + regionName).classList.add('active');
         
         // 하단 버튼 띄우기
-        document.getElementById('action-buttons').style.display = 'flex';
+        const actionButtons = document.getElementById('action-buttons');
+        const extraCallButton = document.getElementById('extra-call-button');
+        actionButtons.style.display = 'flex';
+        actionButtons.classList.toggle('three-way', regionName === 'seosuwon');
+        if (regionName === 'seosuwon') {
+            extraCallButton.style.display = 'block';
+            extraCallButton.href = 'tel:' + contact.extraTel;
+            extraCallButton.textContent = '📞 ' + contact.extraPhone;
+        } else {
+            extraCallButton.style.display = 'none';
+            extraCallButton.removeAttribute('href');
+        }
         document.getElementById('call-button').href = 'tel:' + contact.tel;
         document.getElementById('call-button').textContent = '📞 ' + contact.phone;
         document.getElementById('kakao-button').href = contact.kakao;
@@ -565,7 +619,10 @@
         // 모든 상세 뷰 및 버튼 숨기기
         const views = document.querySelectorAll('.view-section');
         views.forEach(view => view.classList.remove('active'));
-        document.getElementById('action-buttons').style.display = 'none';
+        const actionButtons = document.getElementById('action-buttons');
+        actionButtons.style.display = 'none';
+        actionButtons.classList.remove('three-way');
+        document.getElementById('extra-call-button').style.display = 'none';
         
         // 메인 뷰 보이기
         document.getElementById('main-view').style.display = 'block';
@@ -574,19 +631,6 @@
         window.scrollTo(0, 0);
     }
 </script>
-
-</body>
-</html>
-ody>
-</html>
-   
-        // 스크롤 맨 위로
-        window.scrollTo(0, 0);
-    }
-</script>
-
-</body>
-</html>
 
 </body>
 </html>
