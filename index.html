@@ -13,13 +13,13 @@
     <meta property="og:type" content="website">
     <meta property="og:locale" content="ko_KR">
     <meta property="og:site_name" content="ONROAD">
-    <meta property="og:title" content="ONROAD - 권역별 프로모션 안내">
+    <meta property="og:title" content="온로드 - 권역별 프로모션 안내">
     <meta property="og:description" content="수원 전 지역 배민플러스 운영 팀의 권역별 프로모션과 문의 정보를 확인하세요.">
     <meta property="og:url" content="https://suwononroad.kr/">
     <meta property="og:image" content="https://suwononroad.kr/%EC%84%9C%EC%88%98%EC%9B%90.png">
     <meta property="og:image:alt" content="ONROAD 서수원 권역 지도">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="ONROAD - 권역별 프로모션 안내">
+    <meta name="twitter:title" content="온로드 - 권역별 프로모션 안내">
     <meta name="twitter:description" content="수원 전 지역 배민플러스 운영 팀의 권역별 프로모션과 문의 정보를 확인하세요.">
     <meta name="twitter:image" content="https://suwononroad.kr/%EC%84%9C%EC%88%98%EC%9B%90.png">
     <script type="application/ld+json">
@@ -89,9 +89,21 @@
             padding: 40px 20px 20px;
             text-align: center;
         }
+        .logo-container {
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .logo-img {
+            max-width: 100px;
+            max-height: 100px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 8px rgba(255, 232, 18, 0.15));
+        }
         .logo {
             font-size: 40px; font-weight: 900; font-style: italic;
-            background: linear-gradient(90deg, #ff3b3b, #ff9100);
+            background: linear-gradient(90deg, #ffe812, #ffaa00);
             -webkit-background-clip: text; color: transparent;
             letter-spacing: -2px; line-height: 1.1;
         }
@@ -100,7 +112,7 @@
             margin-top: 8px; letter-spacing: 1px;
         }
         .speed-line {
-            width: 50px; height: 4px; background: #ff3b3b;
+            width: 50px; height: 4px; background: linear-gradient(90deg, #ffe812, #ffaa00);
             margin: 15px auto 0; transform: skewX(-30deg);
         }
 
@@ -229,6 +241,9 @@
     
     <div id="main-view">
         <div class="main-header">
+            <div class="logo-container">
+                <img src="온로드로고.png" alt="온로드 로고" class="logo-img">
+            </div>
             <div class="logo">ONROAD</div>
             <div class="sub-logo">수원 전 지역 배민플러스 운영 팀</div>
             <div class="sub-logo">전 지역 마스터 구간</div>
@@ -283,7 +298,7 @@
         </div>
         <div class="detail-content">
             <div class="d-title">서수원 ONROAD 권역</div>
-            <div class="map-wrapper"><img src="./뉴서수원.png" alt="서수원 지도" class="map-img"></div>
+            <div class="map-wrapper"><img src="./서수원.png" alt="서수원 지도" class="map-img"></div>
             
             <div class="promo-box">
                 <div class="pb-title">현재 진행중인 프로모션</div>
@@ -295,13 +310,17 @@
                 </table>
             </div>
 
-            <div class="contact-box">
-                <div class="pb-title">서수원 문의</div>
-                <div class="contact-row">
-                    <span class="contact-label">전화</span>
-                    <a href="tel:01025029502" class="contact-link">010-2502-9502</a>
-                </div>
-                <div class="contact-row">
+                <div class="contact-box">
+                    <div class="pb-title">서수원 문의</div>
+                    <div class="contact-row">
+                        <span class="contact-label">전화</span>
+                        <a href="tel:01075445748" class="contact-link">010-7544-5748</a>
+                    </div>
+                    <div class="contact-row">
+                        <span class="contact-label">전화</span>
+                        <a href="tel:01025029502" class="contact-link">010-2502-9502</a>
+                    </div>
+                    <div class="contact-row">
                     <span class="contact-label">카카오톡</span>
                     <a href="https://open.kakao.com/o/sodFtoAi" class="contact-link kakao" target="_blank" rel="noopener">온로드 서수원지사</a>
                 </div>
