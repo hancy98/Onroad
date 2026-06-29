@@ -309,6 +309,12 @@
             width: 100%; max-width: 480px; padding: 14px 16px calc(14px + env(safe-area-inset-bottom));
             background: linear-gradient(0deg, #09090b 80%, transparent);
             display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; z-index: 30;
+            visibility: hidden; opacity: 0; pointer-events: none;
+            transition: opacity 0.15s ease;
+            contain: layout paint;
+        }
+        .fixed-bottom.is-visible {
+            visibility: visible; opacity: 1; pointer-events: auto;
         }
         .btn {
             width: 100%; min-width: 0; min-height: 52px; padding: 11px 8px; border-radius: 12px; text-align: center;
@@ -319,6 +325,12 @@
         .btn-call { background: #27272a; color: #fff; border: 1px solid #3f3f46; }
         .btn-extra-call { background: #18181b; color: #fff; border: 1px solid #ffaa00; }
         .btn-kakao { background: #ffe812; color: #3c1e1e; }
+        .fixed-bottom .btn-extra-call {
+            display: none;
+        }
+        .fixed-bottom.show-extra .btn-extra-call {
+            display: flex;
+        }
         .fixed-bottom.three-way {
             grid-template-columns: repeat(2, minmax(0, 1fr));
         }
@@ -589,8 +601,8 @@
         </div>
     </div>
 
-    <div id="action-buttons" class="fixed-bottom" style="display: none;">
-        <a href="#" id="extra-call-button" class="btn btn-extra-call" style="display: none;">📞 010-7544-5748</a>
+    <div id="action-buttons" class="fixed-bottom">
+        <a href="#" id="extra-call-button" class="btn btn-extra-call">📞 010-7544-5748</a>
         <a href="#" id="call-button" class="btn btn-call">📞 전화 상담</a>
         <a href="#" id="kakao-button" class="btn btn-kakao" target="_blank" rel="noopener">💬 카카오톡 문의</a>
     </div>
@@ -644,14 +656,13 @@
         // 하단 버튼 띄우기
         const actionButtons = document.getElementById('action-buttons');
         const extraCallButton = document.getElementById('extra-call-button');
-        actionButtons.style.display = 'grid';
+        actionButtons.classList.add('is-visible');
         actionButtons.classList.toggle('three-way', regionName === 'seosuwon');
+        actionButtons.classList.toggle('show-extra', regionName === 'seosuwon');
         if (regionName === 'seosuwon') {
-            extraCallButton.style.display = 'block';
             extraCallButton.href = 'tel:' + contact.extraTel;
             extraCallButton.textContent = '📞 ' + contact.extraPhone;
         } else {
-            extraCallButton.style.display = 'none';
             extraCallButton.removeAttribute('href');
         }
         document.getElementById('call-button').href = 'tel:' + contact.tel;
@@ -668,9 +679,8 @@
         const views = document.querySelectorAll('.view-section');
         views.forEach(view => view.classList.remove('active'));
         const actionButtons = document.getElementById('action-buttons');
-        actionButtons.style.display = 'none';
-        actionButtons.classList.remove('three-way');
-        document.getElementById('extra-call-button').style.display = 'none';
+        actionButtons.classList.remove('is-visible', 'three-way', 'show-extra');
+        document.getElementById('extra-call-button').removeAttribute('href');
         
         // 메인 뷰 보이기
         document.getElementById('main-view').style.display = 'block';
