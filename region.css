@@ -44,18 +44,19 @@ body {
     font-weight: 900;
     font-style: italic;
     letter-spacing: -1px;
-    margin-bottom: 16px;
+    margin: 0 0 16px;
 }
 .map-wrapper {
     width: 100%;
     border: 1px solid #27272a;
     border-radius: 16px;
     overflow: hidden;
-    margin-bottom: 24px;
+    margin: 0 0 24px;
 }
 .map-img {
     display: block;
     width: 100%;
+    height: auto;
 }
 .promo-box,
 .contact-box {
@@ -78,7 +79,7 @@ body {
     color: #fff;
     font-size: 16px;
     font-weight: 900;
-    margin-bottom: 16px;
+    margin: 0 0 16px;
 }
 .pb-title::before {
     content: '';
@@ -135,6 +136,7 @@ body {
     font-weight: 900;
     font-style: italic;
     line-height: 1.15;
+    margin: 0;
 }
 .mission-sub {
     color: #fff;
