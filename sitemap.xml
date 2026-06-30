@@ -1,33 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
     <url>
         <loc>https://suwononroad.kr/</loc>
-        <lastmod>2026-06-29</lastmod>
+        <lastmod>2026-06-30</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
+        <image:image>
+            <image:loc>https://suwononroad.kr/%EC%98%A8%EB%A1%9C%EB%93%9C%EB%A1%9C%EA%B3%A0.png</image:loc>
+            <image:title>온로드 ONROAD 로고</image:title>
+        </image:image>
     </url>
     <url>
         <loc>https://suwononroad.kr/seosuwon.html</loc>
-        <lastmod>2026-06-29</lastmod>
+        <lastmod>2026-06-30</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
+        <image:image>
+            <image:loc>https://suwononroad.kr/%EC%84%9C%EC%88%98%EC%9B%90.png</image:loc>
+            <image:title>서수원 온로드 권역 지도</image:title>
+        </image:image>
     </url>
     <url>
         <loc>https://suwononroad.kr/jangan.html</loc>
-        <lastmod>2026-06-29</lastmod>
+        <lastmod>2026-06-30</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
+        <image:image>
+            <image:loc>https://suwononroad.kr/%EC%9E%A5%EC%95%88.png</image:loc>
+            <image:title>장안 온로드 권역 지도</image:title>
+        </image:image>
     </url>
     <url>
         <loc>https://suwononroad.kr/paldal.html</loc>
-        <lastmod>2026-06-29</lastmod>
+        <lastmod>2026-06-30</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
+        <image:image>
+            <image:loc>https://suwononroad.kr/%ED%8C%94%EB%8B%AC.png</image:loc>
+            <image:title>팔달 온로드 권역 지도</image:title>
+        </image:image>
     </url>
     <url>
         <loc>https://suwononroad.kr/yeongtong.html</loc>
-        <lastmod>2026-06-29</lastmod>
+        <lastmod>2026-06-30</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
+        <image:image>
+            <image:loc>https://suwononroad.kr/%EC%98%81%ED%86%B5.png</image:loc>
+            <image:title>영통 온로드 권역 지도</image:title>
+        </image:image>
     </url>
 </urlset>
